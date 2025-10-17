@@ -8,6 +8,7 @@ import dev.rollczi.litecommands.bukkit.LiteBukkitFactory
 import dev.rollczi.litecommands.bukkit.LiteBukkitMessages
 import dev.rollczi.litecommands.meta.Meta
 import dev.rollczi.litecommands.validator.ValidatorScope
+import io.lumine.xikage.mythicmobs.legacy.commands.DebugCommands
 import net.mizukilab.pit.actionbar.ActionBarManager
 import net.mizukilab.pit.command.*
 import net.mizukilab.pit.command.handler.HandHasItem
@@ -745,6 +746,7 @@ private fun registerListeners() {
     val classes = listOf<Class<*>>(
 
         CombatListener::class.java,
+        ExpireListener::class.java,
         GameEffectListener::class.java,
         DataListener::class.java,
         EnderChestListener::class.java,

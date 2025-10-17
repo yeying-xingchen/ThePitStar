@@ -93,6 +93,8 @@ public class MegaLongBowEnchant extends AbstractEnchantment implements Listener,
                 final EntityPlayer ePlayer = ((CraftPlayer) player).getHandle();
                 final ItemStack itemStack = Utils.toNMStackQuick(itemInHand);
                 final ItemBow bow = (ItemBow) itemStack.getItem();
+                if (itemStack.getItem() == null) return;
+                if (ePlayer.world == null) return;
                 bow.a(itemStack, ePlayer.world, ePlayer, 0);
             }
         }
