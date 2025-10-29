@@ -725,7 +725,7 @@ private fun loadEvents() {
         RagePitEvent::class.java,
         RedVSBlueEvent::class.java,
 //        BlockHeadEvent::class.java,
-        SpireEvent::class.java,
+//        SpireEvent::class.java,
         AuctionEvent::class.java,
         CakeEvent::class.java,
         DragonEggsEvent::class.java,

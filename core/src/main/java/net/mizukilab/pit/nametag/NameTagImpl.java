@@ -6,7 +6,7 @@ import cn.charlotte.pit.events.genesis.GenesisTeam;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.mizukilab.pit.events.impl.major.HamburgerEvent;
 import net.mizukilab.pit.events.impl.major.RedVSBlueEvent;
-import net.mizukilab.pit.events.impl.major.SpireEvent;
+
 import net.mizukilab.pit.util.SpecialUtil;
 import net.mizukilab.pit.util.chat.CC;
 import net.mizukilab.pit.util.nametag.BufferedNametag;
@@ -53,26 +53,12 @@ public class NameTagImpl implements NametagAdapter {
                 }
             }
 
-            if ("spire".equals(activeEpicEventName)) {
-                final SpireEvent event = (SpireEvent) ThePit.getInstance().getEventFactory().getActiveEpicEvent();
-                priority1 += event.getRank(Bukkit.getPlayer(profile1.getPlayerUuid())) * 10000000;
-                priority2 += event.getRank(Bukkit.getPlayer(profile2.getPlayerUuid())) * 10000000;
-            }
             return Integer.compare(priority1, priority2);
         });
         int i = 200;
         for (PlayerProfile profile : profiles) {
             String displayName;
-            if ("spire".equals(activeEpicEventName)) {
-                final SpireEvent event = (SpireEvent) ThePit.getInstance().getEventFactory().getActiveEpicEvent();
-                final Player target = Bukkit.getPlayer(profile.getPlayerUuid());
-                final int rank = event.getRank(target);
-                if (rank == -1) {
-                    displayName = CC.translate("&7[???&7] " + RankUtil.getPlayerRankColor(profile.getPlayerUuid()));
-                } else {
-                    displayName = CC.translate("&7[&e#" + rank + "&7] " + RankUtil.getPlayerRankColor(profile.getPlayerUuid()));
-                }
-            } else if ("red_vs_blue".equals(activeEpicEventName)) {
+            if ("red_vs_blue".equals(activeEpicEventName)) {
                 RedVSBlueEvent activeEpicEvent = (RedVSBlueEvent) ThePit.getInstance().getEventFactory().getActiveEpicEvent();
                 displayName = activeEpicEvent.isRedTeam(profile.getPlayerUuid()) ? CC.translate(profile.getFormattedLevelTagTabSpec() + " &c") : CC.translate(profile.getFormattedLevelTagTabSpec() + " &9");
             } else {
@@ -107,12 +93,7 @@ public class NameTagImpl implements NametagAdapter {
                 }
             }
             StringBuilder suffix = new StringBuilder();
-            if ("spire".equals(activeEpicEventName)) {
-                final SpireEvent event = (SpireEvent) ThePit.getInstance().getEventFactory().getActiveEpicEvent();
-                final String displayFloor = event.getDisplayFloor(profile.getPlayerUuid());
-                suffix.append(" ").append(displayFloor);
-
-            } else if ("ham".equals(activeEpicEventName)) {
+            if ("ham".equals(activeEpicEventName)) {
                 final HamburgerEvent event = (HamburgerEvent) ThePit.getInstance()
                         .getEventFactory()
                         .getActiveEpicEvent();

@@ -154,13 +154,13 @@ object PitInternalImpl : PitInternalHook {
                 HamburgerEvent()
             }
 
-            "spire" -> {
-                SpireEvent()
-            }
+//            "spire" -> {
+//                SpireEvent()
+//            }
 
-            "squads" -> {
-                SquadsEvent()
-            }
+//            "squads" -> {
+//                SquadsEvent()
+//            }
 
             "auction" -> {
                 AuctionEvent()

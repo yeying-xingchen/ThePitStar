@@ -359,13 +359,6 @@ public class GameEffectListener implements Listener {
                         }
                     }
                     if (enchantLevel > 0 && finalDamage.get() > 0 && finalDamage.get() < 1000) {
-                        // 添加调试信息
-                        if (event.getEntity() instanceof Player player) {
-                            PlayerProfile playerProfile = PlayerProfile.getPlayerProfileByUuid(player.getUniqueId());
-                            if (playerProfile.getPlayerOption().isDebugDamageMessage()) {
-                                player.sendMessage(CC.translate("&cMirror附魔将finalDamage设置为0: " + finalDamage.get()));
-                            }
-                        }
                         finalDamage.set(0);
                     }
                 }
@@ -377,19 +370,15 @@ public class GameEffectListener implements Listener {
             }
 
             if (player.getHealth() < finalDamage.get()) {
-                // 添加安全检查，避免机器人死亡时的NullPointerException
                 try {
                     player.damage(500000.0);
                 } catch (Exception e) {
-                    // 如果damage方法出错，直接设置生命值为0
                     try {
                         player.setHealth(0);
                     } catch (Exception ex) {
-                        // 如果setHealth也失败，尝试使用更底层的方式
                         try {
                             ((CraftPlayer) player).getHandle().setHealth(0.0f);
                         } catch (Exception ignored) {
-                            // 最后的安全网，静默忽略
                         }
                     }
                 }
