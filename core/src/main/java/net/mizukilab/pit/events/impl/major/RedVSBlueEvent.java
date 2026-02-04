@@ -326,6 +326,9 @@ public class RedVSBlueEvent extends AbstractEvent implements IEpicEvent, Listene
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
+        if (event.getTo() == null) {
+            return;
+        }
         this.sendPacket(event.getPlayer());
     }
 
