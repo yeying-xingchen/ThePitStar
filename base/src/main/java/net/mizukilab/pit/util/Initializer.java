@@ -1,10 +1,10 @@
-package net.mizukilab.pit.license;
+package net.mizukilab.pit.util;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class CommonLoader {
+public class Initializer {
     protected static Class<?> loader = null;
-    
+
     public static void bootstrap(JavaPlugin plugin) {
         try {
             if (loader != null) {

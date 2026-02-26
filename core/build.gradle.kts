@@ -129,7 +129,6 @@ tasks.named<ShadowJar>("shadowJar") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveFileName.set("ThePitUltimate-$version" + (if (devBuild) "-dev" else "") + ".jar")
     exclude("META-INF/**")
-    relocate("pku.yim.license", "net.mizukilab.pit.license")
     relocate("panda", "net.mizukilab.pit.libs")
     relocate("dev.rollczi", "net.mizukilab.pit.libs")
     relocate("cn.hutool", "net.mizukilab.pit.libs")

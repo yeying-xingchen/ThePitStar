@@ -18,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import real.nanoneko.register.IMagicLicense;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -27,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Skip
 @BowOnly
-public class PinDownEnchant extends AbstractEnchantment implements Listener, IActionDisplayEnchant, IPlayerShootEntity, IMagicLicense {
+public class PinDownEnchant extends AbstractEnchantment implements Listener, IActionDisplayEnchant, IPlayerShootEntity {
 
     private static final SiltedUpBuff debuff = new SiltedUpBuff();
 

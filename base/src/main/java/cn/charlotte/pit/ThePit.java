@@ -32,7 +32,7 @@ import net.mizukilab.pit.enchantment.EnchantmentFactor;
 import net.mizukilab.pit.hologram.HologramFactory;
 import net.mizukilab.pit.item.IItemFactory;
 import net.mizukilab.pit.item.ItemFactor;
-import net.mizukilab.pit.license.CommonLoader;
+import net.mizukilab.pit.util.Initializer;
 import net.mizukilab.pit.listener.SafetyJoinListener;
 import net.mizukilab.pit.map.MapSelector;
 import net.mizukilab.pit.medal.MedalFactory;
@@ -75,9 +75,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.slf4j.Logger;
-import pku.yim.license.MagicLicense;
-import pku.yim.license.PluginProxy;
-import pku.yim.license.Resource;
 import redis.clients.jedis.JedisPool;
 import spg.lgdev.iSpigot;
 import zone.rong.imaginebreaker.ImagineBreaker;
@@ -94,7 +91,7 @@ import java.util.function.Function;
 /**
  * @author EmptyIrony, Misoryan, KleeLoveLife, Rabbit0w0, Araykal
  */
-public class ThePit extends JavaPlugin implements PluginMessageListener, PluginProxy {
+public class ThePit extends JavaPlugin implements PluginMessageListener {
     public static String BASE_VERSION;
     @Getter
     public static PitInternalHook api;
@@ -227,7 +224,7 @@ public class ThePit extends JavaPlugin implements PluginMessageListener, PluginP
         }
         //Post load, delayed init
         Bukkit.getScheduler().runTask(this,() -> {
-            CommonLoader.bootstrap(this);
+            Initializer.bootstrap(this);
             postLoad();
         });
     }
@@ -517,7 +514,7 @@ public class ThePit extends JavaPlugin implements PluginMessageListener, PluginP
         ImagineBreaker.wipeMethodFilters();
         ImagineBreaker.wipeFieldFilters();
         instance = this;
-        CommonLoader.preBootstrap(this);
+        Initializer.preBootstrap(this);
         DependencyManager dependencyManager = new DependencyManager(this, new ReflectionClassLoader(this));
         dependencyManager.loadDependencies(
                 new Dependency("fastutil", "it.unimi.dsi", "fastutil", "8.5.15", LoaderType.REFLECTION),
@@ -898,12 +895,6 @@ public class ThePit extends JavaPlugin implements PluginMessageListener, PluginP
     @Override
     public boolean isPrimaryThread() {
         return Bukkit.isPrimaryThread();
-    }
-
-
-    @Override
-    public Resource getResourceType() {
-        return Resource.CLEAR_LOWERCASE;
     }
 
 }

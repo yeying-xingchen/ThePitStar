@@ -18,6 +18,6 @@ object Loader {
         System.setProperty("env",this.javaClass.name);
 
         System.setProperty("ent","start");
-        println("MagicLicense initialized")
+        println("Plugin initialized")
     }
 }

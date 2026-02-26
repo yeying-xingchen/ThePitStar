@@ -28,7 +28,6 @@ repositories {
 }
 tasks.named<ShadowJar>("shadowJar") {
     archiveFileName.set("ThePitUltimate-$version.jar")
-    relocate("pku.yim.license", "net.mizukilab.pit.license")
     relocate("panda","net.mizukilab.pit.libs")
     relocate("dev.rollczi","net.mizukilab.pit.libs")
     relocate("cn.hutool","net.mizukilab.pit.libs")

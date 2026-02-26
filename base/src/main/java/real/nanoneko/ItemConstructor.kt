@@ -1,7 +1,5 @@
 package real.nanoneko
 
-import real.nanoneko.register.IMagicLicense
-
 /**
  * @author Araykal
  * @since 2025/1/31
@@ -15,12 +13,8 @@ object ItemConstructor {
     }
 
     fun addItems(enchantment: Class<*>) {
-        println("This class is deprecated, please use PerkFactory.init(?..), this feature will be removed in future!!!")
-        if (IMagicLicense::class.java.isAssignableFrom(enchantment)) {
-            items.add(enchantment)
-        } else {
-            throw IllegalArgumentException("Only classes implementing IMagicLicense can be added as items.")
-        }
+        println("This class is deprecated, please use PerkFactory.init(...), this feature will be removed in future!!!")
+        items.add(enchantment)
     }
 
     fun removeItems(enchantment: Class<*>) {
