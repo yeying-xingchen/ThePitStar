@@ -19,7 +19,8 @@ public class BannerUtil {
                 while ((line = reader.readLine()) != null) {
                     ThePit.getInstance().sendLogs("§c" + line);
                 }
-                ThePit.getInstance().sendLogs("Starting ThePitUltimate...");
+                ThePit.getInstance().sendLogs("Starting ThePitStar...");
+                ThePit.getInstance().sendLogs("§aAuthor: §e" + ThePit.getInstance().getDescription().getAuthors().get(0));
                 ThePit.getInstance().sendLogs("§aVersion: §e" + ThePit.getInstance().getDescription().getVersion());
 
             }

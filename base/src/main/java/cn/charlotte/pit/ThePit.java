@@ -514,7 +514,6 @@ public class ThePit extends JavaPlugin implements PluginMessageListener {
         ImagineBreaker.wipeMethodFilters();
         ImagineBreaker.wipeFieldFilters();
         instance = this;
-        Initializer.preBootstrap(this);
         DependencyManager dependencyManager = new DependencyManager(this, new ReflectionClassLoader(this));
         dependencyManager.loadDependencies(
                 new Dependency("fastutil", "it.unimi.dsi", "fastutil", "8.5.15", LoaderType.REFLECTION),
@@ -840,6 +839,7 @@ public class ThePit extends JavaPlugin implements PluginMessageListener {
                         LoaderType.REFLECTION
                 )
         );
+        Initializer.preBootstrap(this);
     }
 
     /**
