@@ -480,9 +480,14 @@ public class ThePit extends JavaPlugin implements PluginMessageListener {
 //                    false
 //            );
 //        }
-        PitWorldConfig selectedWorldConfig = cfgMan.getSelectedWorldConfig();
-        this.pitConfig = selectedWorldConfig;
-        return selectedWorldConfig != null;
+        try {
+            PitWorldConfig selectedWorldConfig = cfgMan.getSelectedWorldConfig();
+            this.pitConfig = selectedWorldConfig;
+            return selectedWorldConfig != null;
+        } catch (IllegalArgumentException e) {
+            log.info("无法加载NPC位置设置，如进服后NPC无异常，请无视本提示。 {}", e.getMessage());
+            return false;
+        }
     }
 
     private void loadDatabase() {

@@ -67,7 +67,7 @@ public class TickHandler extends BukkitRunnable {
         long end = System.currentTimeMillis();
         long duration = end - start;
         // 每100个tick记录一次性能日志，但只在debug模式开启时
-        if (tick % 100 == 0 && duration > 50 && ThePit.getInstance().getGlobalConfig().isPerformanceLogging()) {
+        if (tick % 100 == 0 && duration > 50 && instance.getGlobalConfig().isPerformanceLogging()) {
             Bukkit.getLogger().info("TickHandler execution time: " + duration + "ms for " + playerCount + " players");
         }
     }
@@ -144,7 +144,7 @@ public class TickHandler extends BukkitRunnable {
                 if (b == PublicUtil.TICK_OFF_MAGIC_CODE) {
                     return;
                 }
-                if (shouldTick(tick, b)) {
+                if (tick % Math.max(1, b) == 0) {
                     task.handle(level, player);
                 }
             }
@@ -160,7 +160,7 @@ public class TickHandler extends BukkitRunnable {
                 if (b == PublicUtil.TICK_OFF_MAGIC_CODE) {
                     return;
                 }
-                if (shouldTick(tick, b)) {
+                if (tick % Math.max(1, b) == 0) {
                     task.handle(level, player);
                 }
             }
@@ -192,7 +192,7 @@ public class TickHandler extends BukkitRunnable {
                 if (b == PublicUtil.TICK_OFF_MAGIC_CODE) {
                     return;
                 }
-                if (shouldTick(tick, b)) {
+                if (tick % Math.max(1, b) == 0) {
                     task.handle(level, player);
                 }
             }

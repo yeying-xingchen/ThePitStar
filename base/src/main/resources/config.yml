@@ -11,7 +11,7 @@
 #    该版本生成代码为 [ {random}-{randomstring:6} ] 请注意此构造的jar请不要泄漏给他人,已在jar内随机插入水印 泄漏者必追溯！
 #    #{date}
 #
-eigenToken: ""
+
 service:
   mongodb:
     ip: 127.0.0.1
@@ -33,6 +33,12 @@ debug:
     z: -6.306275814520202
     pitch: 38.875862
     yaw: -273.7115
+
+#保存选项
+save:
+  #自动保存间隔（tick），20tick=1min
+  autoSaveInterval: 12000
+
 #宵禁设置
 curfew:
   #启用

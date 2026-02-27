@@ -47,8 +47,9 @@ public class AsyncTickHandler extends BukkitRunnable {
         if (++tick == Long.MIN_VALUE) {
             tick = 0; //从头开始
         }
-        // 调整自动保存频率，从每6000tick(5分钟)改为每12000tick(10分钟)
-        if (tick > 1200 && tick % 12000 == 0) {
+        // 使用配置文件中的自动保存间隔
+        int autoSaveInterval = instance.getGlobalConfig().getAutoSaveInterval();
+        if (tick > 1200 && tick % autoSaveInterval == 0) {
             //AutoSave
             doAutoSave();
             return;

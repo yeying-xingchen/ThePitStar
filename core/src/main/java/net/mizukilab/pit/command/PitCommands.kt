@@ -907,6 +907,21 @@ class PitCommands {
         ThePit.getInstance().configManager.reload()
     }
 
+    @Execute(name = "saveinterval", aliases = ["savefreq"])
+    @Permission("pit.admin")
+    fun saveInterval(@Context player: Player, @Arg("interval") interval: Int) {
+        val globalConfig = ThePit.getInstance().globalConfig
+        if (interval < 600) { // 最小10分钟
+            player.sendMessage(CC.translate("&c保存间隔不能小于600tick(5分钟)!"))
+            return
+        }
+        globalConfig.setAutoSaveInterval(interval)
+        globalConfig.save()
+        val minutes = interval / 1200.0
+        player.sendMessage(CC.translate("&a自动保存间隔已设置为 &e" + String.format("%.1f", minutes) + " &a分钟!"))
+        ThePit.getInstance().configManager.reload()
+    }
+
     @Execute(name = "offer")
     fun offerCreate(@Context player: Player, @Arg("target") targetPlayer: String, @Arg("price") price: String) {
         if (!player.hasPermission("pit.admin")) {

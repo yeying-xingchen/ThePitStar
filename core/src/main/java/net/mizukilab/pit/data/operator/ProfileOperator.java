@@ -190,11 +190,11 @@ public class ProfileOperator implements IProfilerOperator {
                 if (operator.profile.code == -2) {
                     return false;
                 }
-                boolean b = !operator.hasAnyOperation();
-                boolean lastFireExit = operator.fireExit && b; // use lastFireExit and should wait all operation to remove
+                boolean hasNoOperations = !operator.hasAnyOperation();
+                boolean lastFireExit = operator.fireExit && hasNoOperations; // use lastFireExit and should wait all operation to remove
 
                 if (!operator.fireExit) {
-                    if (b) {
+                    if (hasNoOperations) {
                         if (operator.isLoaded()) {
                             operator.save(true, true);
                         } else {

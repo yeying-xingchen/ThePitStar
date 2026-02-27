@@ -45,6 +45,13 @@ public class PitGlobalConfig extends Configuration {
     @Setter
     @Getter
     @ConfigData(
+            path = "save.autoSaveInterval"
+    )
+    private int autoSaveInterval = 12000; // 默认10分钟(12000tick)
+
+    @Setter
+    @Getter
+    @ConfigData(
             path = "curfew.enable"
     )
     private boolean curfewEnable;
@@ -74,11 +81,6 @@ public class PitGlobalConfig extends Configuration {
     public List<String> animationForEpicEvent;
 
     public int periodForEpicEvent;
-    @Getter
-    @ConfigData(
-            path = "eigenToken"
-    )
-    private String token;
     @Setter
     @Getter
     @ConfigData(
