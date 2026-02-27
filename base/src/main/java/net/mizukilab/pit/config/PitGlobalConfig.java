@@ -38,6 +38,13 @@ public class PitGlobalConfig extends Configuration {
     @Setter
     @Getter
     @ConfigData(
+            path = "debug.performanceLogging"
+    )
+    private boolean performanceLogging = false;
+
+    @Setter
+    @Getter
+    @ConfigData(
             path = "curfew.enable"
     )
     private boolean curfewEnable;

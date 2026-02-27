@@ -66,8 +66,8 @@ public class TickHandler extends BukkitRunnable {
         
         long end = System.currentTimeMillis();
         long duration = end - start;
-        // 每100个tick记录一次性能日志
-        if (tick % 100 == 0 && duration > 50) {
+        // 每100个tick记录一次性能日志，但只在debug模式开启时
+        if (tick % 100 == 0 && duration > 50 && ThePit.getInstance().getGlobalConfig().isPerformanceLogging()) {
             Bukkit.getLogger().info("TickHandler execution time: " + duration + "ms for " + playerCount + " players");
         }
     }

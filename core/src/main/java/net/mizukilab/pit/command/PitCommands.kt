@@ -893,7 +893,137 @@ class PitCommands {
                 player.sendMessage(CC.translate("&c此物品无法用于交易!"))
                 return@ifPresentAndILoaded
             }
+        }
+    }
 
+    @Execute(name = "performance", aliases = ["perf"])
+    @Permission("pit.admin")
+    fun performance(@Context player: Player, @Arg("toggle") toggle: String) {
+        val globalConfig = ThePit.getInstance().globalConfig
+        val newValue = toggle.equals("on", ignoreCase = true)
+        globalConfig.performanceLogging = newValue
+        globalConfig.save()
+        player.sendMessage(CC.translate("&a性能日志已" + (if (newValue) "开启" else "关闭") + "!"))
+        ThePit.getInstance().configManager.reload()
+    }
+
+    @Execute(name = "offer")
+    fun offerCreate(@Context player: Player, @Arg("target") targetPlayer: String, @Arg("price") price: String) {
+        if (!player.hasPermission("pit.admin")) {
+            player.sendMessage(CC.translate("&c该指令已经弃用, 请使用 /trade"))
+            return
+        }
+        val profile = PlayerProfile.getPlayerProfileByUuid(player.uniqueId)
+
+
+        if (profile.offerData.hasActiveOffer()) {
+            player.sendMessage(CC.translate("&c你当前有一个正在进行中的交易报价!"))
+            return
+        } else if (profile.offerData.hasUnclaimedOffer()) {
+            if (InventoryUtil.isInvFull(player)) {
+                player.sendMessage(CC.translate("&c你有一个未结算的交易报价,请将背包腾出空间后重试!"))
+            } else {
+                InventoryUtil.addInvReverse(player.inventory, profile.offerData.itemStack)
+                profile.offerData = OfferData()
+                player.sendMessage(CC.translate("&c你有一个未结算的交易报价,相关物品已退还到你的背包.要发起一个新的交易报价,请再次输入此指令."))
+            }
+            return
+        }
+        if (targetPlayer == "#null" || price == "#null") {
+            player.sendMessage(CC.translate("&c&l错误的使用方法! &7请手持要出售的物品,输入 &e/offer 玩家名 你的出价 &7来向此玩家发送一个报价请求,对方同意后将获得你提供的物品,你获得出价的硬币."))
+            return
+        }
+        try {
+            if (price.toInt() <= 0) {
+                player.sendMessage("§c请输入正确的价格!")
+                return
+            }
+        } catch (e: java.lang.Exception) {
+            player.sendMessage(CC.translate("&c你输入的价格有误!"))
+            return
+        }
+        if (Bukkit.getPlayer(targetPlayer) == null || !Bukkit.getPlayer(targetPlayer).isOnline || PlayerUtil.isVanished(
+                Bukkit.getPlayer(targetPlayer)
+            )
+        ) {
+            player.sendMessage(CC.translate("&c你选择的玩家不在线!"))
+            return
+        }
+        val target = Bukkit.getPlayer(targetPlayer)
+        ThePit.getInstance().profileOperator.ifPresentAndILoaded(target) { operator: IOperator ->
+            val targetProfile = operator.profile()
+            if (player.uniqueId == target.uniqueId || player.isSpecial || target.isSpecial) {
+                if (!player.hasPermission("pit.admin") || player.isSpecial) {
+                    player.sendMessage(CC.translate("&c你无法选择此玩家进行交易!"))
+                    return@ifPresentAndILoaded
+                }
+            }
+            if (!profile.combatTimer.hasExpired()) {
+                player.sendMessage(CC.translate("&c你无法在战斗中使用此功能!"))
+                return@ifPresentAndILoaded
+            }
+
+
+            // 当前时间
+            val now = System.currentTimeMillis()
+            val date = profile.tradeLimit.lastRefresh
+
+            //获取今天的日期
+            val nowDay = dateFormat.format(now)
+
+            //对比的时间
+            val day = dateFormat.format(date)
+
+
+            //daily reset
+            if (day != nowDay && Calendar.getInstance()[Calendar.HOUR_OF_DAY] >= 4) {
+                profile.tradeLimit.lastRefresh = now
+                profile.tradeLimit.amount = 0.0
+                profile.tradeLimit.times = 0
+            }
+
+            if (profile.tradeLimit.times >= 25) {
+                player.sendMessage(CC.translate("&c你今天的交易次数已经达到上限! (25/25)"))
+                player.sendMessage(CC.translate("&c使用 &e/tradeLimits &c查看你的今日交易上限情况."))
+                return@ifPresentAndILoaded
+            }
+
+            if (profile.tradeLimit.amount + price.toInt() >= 50000) {
+                player.sendMessage(CC.translate("&c你的开价加上今日已交易量已超过交易上限,因此你无法发起此交易报价."))
+                player.sendMessage(CC.translate("&c使用 &e/tradeLimits &c查看你的今日交易上限情况."))
+                return@ifPresentAndILoaded
+            }
+
+            if (!player.name.equals(player.displayName, ignoreCase = true)) {
+                player.sendMessage(CC.translate("&c你无法在匿名模式下使用交易功能!"))
+                return@ifPresentAndILoaded
+            }
+
+            if (profile.level < 60) {
+                player.sendMessage(
+                    CC.translate(
+                        "&c&l等级不足! &7此指令在 " + LevelUtil.getLevelTag(
+                            profile.getPrestige(),
+                            60
+                        ) + " &7时解锁."
+                    )
+                )
+                return@ifPresentAndILoaded
+            }
+            if (player.name == targetPlayer) {
+                player.sendMessage(CC.translate("&c你无法对自己发起交易!"))
+                return@ifPresentAndILoaded
+            }
+
+            if (player.itemInHand == null || player.itemInHand.type == Material.AIR) {
+                player.sendMessage(CC.translate("&c请手持你要出售的物品再设置出售对象与价格!"))
+                return@ifPresentAndILoaded
+            }
+
+            if (!ItemUtil.canTrade(player.itemInHand)) {
+                player.sendMessage(CC.translate("&c此物品无法用于交易!"))
+                return@ifPresentAndILoaded
+            }
 
             //todo: create offer
             profile.offerData.createOffer(target.uniqueId, player.itemInHand, price.toInt().toDouble())
