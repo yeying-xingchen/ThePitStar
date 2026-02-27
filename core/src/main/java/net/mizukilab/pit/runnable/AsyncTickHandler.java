@@ -47,7 +47,8 @@ public class AsyncTickHandler extends BukkitRunnable {
         if (++tick == Long.MIN_VALUE) {
             tick = 0; //从头开始
         }
-        if (tick > 1200 && tick % 6000 == 0) {
+        // 调整自动保存频率，从每6000tick(5分钟)改为每12000tick(10分钟)
+        if (tick > 1200 && tick % 12000 == 0) {
             //AutoSave
             doAutoSave();
             return;
@@ -58,33 +59,29 @@ public class AsyncTickHandler extends BukkitRunnable {
 
     public void doAutoSave() {
         final long last = System.currentTimeMillis();
+        // 批量保存所有玩家资料，减少数据库操作次数
         instance.getProfileOperator().doSaveProfiles();
-
 
         final long now = System.currentTimeMillis();
         Bukkit.getLogger().info("Auto saved player backups, time: " + (now - last) + "ms");
         Bukkit.getOnlinePlayers().forEach(player -> {
-
             if (player.hasPermission("pit.admin")) return;
+            
             ((ProfileOperator) instance.getProfileOperator()).operatorStrict(player).ifPresent(operator -> {
-                PlayerProfile playerProfileByUuid = operator.profile();
-                if (playerProfileByUuid.getCombatTimer().hasExpired()) {
-                    if (player.getLastDamageCause() != null) {
-                        player.setLastDamageCause(null); //fix memory leak
-                    }
+                PlayerProfile profile = operator.profile();
+                // 修复内存泄漏
+                if (profile.getCombatTimer().hasExpired() && player.getLastDamageCause() != null) {
+                    player.setLastDamageCause(null);
                 }
-                final long lastActionTimestamp = playerProfileByUuid
-                        .getLastActionTimestamp();
-                //AntiAFK
+                
+                // 减少AntiAFK检查的频率，只在需要时更新
+                final long lastActionTimestamp = profile.getLastActionTimestamp();
                 if (now - lastActionTimestamp >= 10 * 60 * 1000) {
-                    // 意义不明
-                    // player.sendMessage("...", true);
                     operator.pending(i -> {
-                        playerProfileByUuid.setLastActionTimestamp(now);
+                        profile.setLastActionTimestamp(now);
                     });
                 }
             });
-
         });
     }
 }

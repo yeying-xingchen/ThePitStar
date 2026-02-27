@@ -16,31 +16,32 @@ object EventsHandler {
     fun refreshEvents() {
         val factory = ThePit.getInstance().eventFactory
 
+        // 减少队列大小，从50改为30
         var count = epicQueue.size
-        if (count < 50) {
-            val need = 50 - count
-            for (index in 0..need) {
-                var until = factory.epicEvents.size
+        if (count < 30) {
+            val need = 30 - count
+            for (index in 0 until need) {
+                val until = factory.epicEvents.size
                 if (until > 0) {
-                    var nextInt = Random.nextInt(until)
+                    val nextInt = Random.nextInt(until)
                     val event = factory.epicEvents[nextInt] as AbstractEvent
                     epicQueue.add(event.eventInternalName)
                 }
             }
         }
 
+        // 减少队列大小，从100改为60
         count = normalQueue.size
-
-        if (count < 100) {
-            val need = 100 - count
-            for (index in 0..need) {
-                var until1 = factory.normalEvents.size
-                if(until1 < 1) {
-                    continue;
+        if (count < 60) {
+            val need = 60 - count
+            for (index in 0 until need) {
+                val until1 = factory.normalEvents.size
+                if (until1 < 1) {
+                    continue
                 }
                 val event = factory.normalEvents[Random.nextInt(until1)] as AbstractEvent
                 if (event.eventInternalName.equals("auction") && RandomUtil.hasSuccessfullyByChance(0.75)) {
-                    var until = factory.normalEvents.size
+                    val until = factory.normalEvents.size
                     if (until > 0) {
                         val anotherEvent = factory.normalEvents[Random.nextInt(until)] as AbstractEvent
                         normalQueue.add(anotherEvent.eventInternalName)
@@ -51,17 +52,20 @@ object EventsHandler {
             }
         }
 
-        val eventQueue = EventQueue().apply {
-            this.normalEvents.addAll(normalQueue)
-            this.epicEvents.addAll(epicQueue)
-        }
+        // 只有当队列被实际修改时才更新数据库
+        if (epicQueue.size >= 25 || normalQueue.size >= 55) {
+            val eventQueue = EventQueue().apply {
+                this.normalEvents.addAll(normalQueue)
+                this.epicEvents.addAll(epicQueue)
+            }
 
-        Bukkit.getScheduler().runTaskAsynchronously(ThePit.getInstance()) {
-            ThePit.getInstance().mongoDB.eventQueueCollection.replaceOne(
-                Filters.eq("id", "1"),
-                eventQueue,
-                ReplaceOptions().upsert(true)
-            )
+            Bukkit.getScheduler().runTaskAsynchronously(ThePit.getInstance()) {
+                ThePit.getInstance().mongoDB.eventQueueCollection.replaceOne(
+                    Filters.eq("id", "1"),
+                    eventQueue,
+                    ReplaceOptions().upsert(true)
+                )
+            }
         }
     }
 

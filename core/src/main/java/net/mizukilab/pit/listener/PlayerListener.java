@@ -115,7 +115,13 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
+        
+        // 清理cooldown数据
+        UUID playerId = event.getPlayer().getUniqueId();
+        firstAidEggCooldown.remove(playerId);
+        goldenAppleCooldown.remove(playerId);
 
+        // 处理玩家资料
         ((ProfileOperator) ThePit.getInstance().getProfileOperator())
                 .operatorStrict(event.getPlayer()).ifPresent(profileOper -> {
                     PlayerProfile profile = profileOper.profile();
@@ -126,7 +132,7 @@ public class PlayerListener implements Listener {
                     PlayerInv playerInv = PlayerInv.fromPlayerInventory(event.getPlayer().getInventory());
                     profile.disallow();
                     checkIllegalProfile(profile);
-                    profile.setLogin(false); //我草泥马
+                    profile.setLogin(false);
                     //fire at post
                     profile.setInventoryUnsafe(playerInv).allow();
                     triggerDeath(event, profile);
@@ -266,11 +272,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        firstAidEggCooldown.remove(event.getPlayer().getUniqueId());
-        goldenAppleCooldown.remove(event.getPlayer().getUniqueId());
-    }
+    
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerPickupItem(PlayerPickupItemEvent event) {

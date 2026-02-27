@@ -43,19 +43,33 @@ public class TickHandler extends BukkitRunnable {
     @SneakyThrows
     @Override
     public void run() {
+        long start = System.currentTimeMillis();
         long currentTickTime = Utils.toUnsignedInt(tick);
+        // 缓存实例引用
+        ThePit instance = ThePit.getInstance();
         Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
+        int playerCount = onlinePlayers.size();
+        
+        // 只遍历在线玩家
         for (Player player : onlinePlayers) {
             PlayerProfile profile = PlayerProfile.getPlayerProfileByUuid(player.getUniqueId());
             if (!profile.isLoaded()) {
                 continue;
             }
-            tickPerks(player, profile,currentTickTime);
-            tickItemInHand(player, tickLeggings(player, profile,currentTickTime), profile,currentTickTime); //别问我为什么这样写 lol
+            tickPerks(player, profile, currentTickTime);
+            tickItemInHand(player, tickLeggings(player, profile, currentTickTime), profile, currentTickTime);
         }
-        ThePit.getInstance().getMapSelector().tick();
-        ((Parker)ThePit.getInstance().getParker()).tick();
+        // 减少方法调用开销
+        instance.getMapSelector().tick();
+        ((Parker) instance.getParker()).tick();
         incTickTime();
+        
+        long end = System.currentTimeMillis();
+        long duration = end - start;
+        // 每100个tick记录一次性能日志
+        if (tick % 100 == 0 && duration > 50) {
+            Bukkit.getLogger().info("TickHandler execution time: " + duration + "ms for " + playerCount + " players");
+        }
     }
     private void incTickTime(){
         tick++;
@@ -118,29 +132,36 @@ public class TickHandler extends BukkitRunnable {
         profile.heldItem = handleIMythicItemTickTasks(leggings, player,tick);
     }
 
-    private void tickPerks(Player player, PlayerProfile profile,long tick) {
-        for (Map.Entry<Integer, PerkData> entry : profile.getChosePerk().entrySet()) {
-            final ITickTask task = entry.getValue().getITickTask(ticksPerk);
+    private void tickPerks(Player player, PlayerProfile profile, long tick) {
+        // 缓存perk数据，减少方法调用
+        Map<Integer, PerkData> chosePerk = profile.getChosePerk();
+        for (Map.Entry<Integer, PerkData> entry : chosePerk.entrySet()) {
+            PerkData perkData = entry.getValue();
+            final ITickTask task = perkData.getITickTask(ticksPerk);
             if (task != null) {
-                int b = task.loopTick(entry.getValue().getLevel());
-                if(b == PublicUtil.TICK_OFF_MAGIC_CODE){
+                int level = perkData.getLevel();
+                int b = task.loopTick(level);
+                if (b == PublicUtil.TICK_OFF_MAGIC_CODE) {
                     return;
                 }
                 if (shouldTick(tick, b)) {
-                    task.handle(entry.getValue().getLevel(), player);
+                    task.handle(level, player);
                 }
             }
         }
 
-        for (Map.Entry<String, PerkData> entry : profile.getUnlockedPerkMap().entrySet()) {
-            final ITickTask task = ticksPerk.get(entry.getValue().getPerkInternalName());
+        Map<String, PerkData> unlockedPerkMap = profile.getUnlockedPerkMap();
+        for (Map.Entry<String, PerkData> entry : unlockedPerkMap.entrySet()) {
+            PerkData perkData = entry.getValue();
+            final ITickTask task = ticksPerk.get(perkData.getPerkInternalName());
             if (task != null) {
-                int b = task.loopTick(entry.getValue().getLevel());
-                if(b == PublicUtil.TICK_OFF_MAGIC_CODE){
+                int level = perkData.getLevel();
+                int b = task.loopTick(level);
+                if (b == PublicUtil.TICK_OFF_MAGIC_CODE) {
                     return;
                 }
                 if (shouldTick(tick, b)) {
-                    task.handle(entry.getValue().getLevel(), player);
+                    task.handle(level, player);
                 }
             }
         }
@@ -155,20 +176,23 @@ public class TickHandler extends BukkitRunnable {
         return imythicItem;
     }
 
-    private void tickIMythicItem(Player player, IMythicItem imythicItem,long tick) {
+    private void tickIMythicItem(Player player, IMythicItem imythicItem, long tick) {
         if (imythicItem != null) {
-            for (Object2IntMap.Entry<AbstractEnchantment> entry : imythicItem.getEnchantments().object2IntEntrySet()) {
-                final ITickTask task = enchantTicks.get(entry.getKey().getNbtName());
+            // 缓存附魔数据，减少方法调用
+            Object2IntMap<AbstractEnchantment> enchantments = imythicItem.getEnchantments();
+            for (Object2IntMap.Entry<AbstractEnchantment> entry : enchantments.object2IntEntrySet()) {
+                AbstractEnchantment enchantment = entry.getKey();
+                final ITickTask task = enchantTicks.get(enchantment.getNbtName());
                 if (task == null) {
                     continue;
                 }
 
                 final int level = entry.getIntValue();
                 int b = task.loopTick(level);
-                if(b == PublicUtil.TICK_OFF_MAGIC_CODE){
+                if (b == PublicUtil.TICK_OFF_MAGIC_CODE) {
                     return;
                 }
-                if (shouldTick(tick,b)) {
+                if (shouldTick(tick, b)) {
                     task.handle(level, player);
                 }
             }
