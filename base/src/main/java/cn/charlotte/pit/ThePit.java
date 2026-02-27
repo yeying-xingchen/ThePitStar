@@ -219,7 +219,7 @@ public class ThePit extends JavaPlugin implements PluginMessageListener {
             preLoad(whiteList);
         } catch (Exception e) {
             e.printStackTrace();
-            disablePlugin();
+            onDisable();
             return;
         }
         //Post load, delayed init
