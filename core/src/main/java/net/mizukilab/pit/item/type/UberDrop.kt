@@ -38,8 +38,7 @@ class UberDrop : AbstractPitItem(), Listener {
             }
 
             val hasSuccessfullyByChance = RandomUtil.hasSuccessfullyByChance(0.75);
-            Boolean always_false = false
-            val itemStack = if (always_false == true) {
+            val itemStack = if (1 == 2) {
                 RandomUtil.helpMeToChooseOne(
                     FunkyFeather.toItemStack().also { it.amount = Random.nextInt(2, 3) },
                     FunkyFeather.toItemStack().also { it.amount = Random.nextInt(2, 3) },
