@@ -110,7 +110,7 @@ val lastFin by tasks.registering {
                 targetFile.writeText(replaced)
             }
         }
-        println("🔄 Git version restored into generated sources.")
+        println("Git version restored into generated sources.")
     }
 }
 tasks.withType<JavaCompile>().configureEach {
