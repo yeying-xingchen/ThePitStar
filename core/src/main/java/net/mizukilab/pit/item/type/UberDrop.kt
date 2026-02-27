@@ -38,15 +38,7 @@ class UberDrop : AbstractPitItem(), Listener {
             }
 
             val hasSuccessfullyByChance = RandomUtil.hasSuccessfullyByChance(0.75);
-            val itemStack = if (ThePit.getInstance().globalConfig.token == "MyPitNetWork") {
-                RandomUtil.helpMeToChooseOne(
-                    FunkyFeather.toItemStack().also { it.amount = Random.nextInt(2, 3) },
-                    FunkyFeather.toItemStack().also { it.amount = Random.nextInt(2, 3) },
-                    PitCactus.toItemStack().also { it.amount = Random.nextInt(5, 20) },
-                    JewelSword().toItemStack(),
-                    TotallyLegitGem().toItemStack()
-                ) as ItemStack
-            } else {
+            val itemStack = {
                 RandomUtil.helpMeToChooseOne(
                     FunkyFeather.toItemStack().also { it.amount = Random.nextInt(2, 3) },
                     FunkyFeather.toItemStack().also { it.amount = Random.nextInt(2, 3) },

@@ -66,7 +66,7 @@ val injectGitVersion by tasks.registering {
                 targetFile.writeText(replaced)
             }
         }
-        println("🔄 Git version injected into generated sources.")
+        println("Git version injected into generated sources.")
     }
 }
 tasks.register<ProGuardTask>("proguard") {

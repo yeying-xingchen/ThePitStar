@@ -52,6 +52,13 @@ public class PitGlobalConfig extends Configuration {
     @Setter
     @Getter
     @ConfigData(
+            path = "menu.confirmMenuDuration"
+    )
+    private int confirmMenuDuration = 5; // 确认菜单显示时间(tick)
+
+    @Setter
+    @Getter
+    @ConfigData(
             path = "curfew.enable"
     )
     private boolean curfewEnable;

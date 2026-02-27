@@ -39,6 +39,11 @@ save:
   #自动保存间隔（tick），20tick=1min
   autoSaveInterval: 12000
 
+#菜单选项
+menu:
+  #确认菜单显示时间（tick），默认5tick
+  confirmMenuDuration: 5
+
 #宵禁设置
 curfew:
   #启用
