@@ -882,19 +882,4 @@ public class ThePit extends JavaPlugin implements PluginMessageListener {
         this.factory = factory;
     }
 
-    @Override
-    public void info(String s) {
-        log.info(s);
-    }
-
-    @Override
-    public void disablePlugin() {
-        onDisable();
-    }
-
-    @Override
-    public boolean isPrimaryThread() {
-        return Bukkit.isPrimaryThread();
-    }
-
 }
