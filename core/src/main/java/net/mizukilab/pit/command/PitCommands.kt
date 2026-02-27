@@ -901,7 +901,7 @@ class PitCommands {
     fun performance(@Context player: Player, @Arg("toggle") toggle: String) {
         val globalConfig = ThePit.getInstance().globalConfig
         val newValue = toggle.equals("on", ignoreCase = true)
-        globalConfig.performanceLogging = newValue
+        globalConfig.setPerformanceLogging(newValue)
         globalConfig.save()
         player.sendMessage(CC.translate("&a性能日志已" + (if (newValue) "开启" else "关闭") + "!"))
         ThePit.getInstance().configManager.reload()
