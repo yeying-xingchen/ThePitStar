@@ -230,57 +230,84 @@ public class ThePit extends JavaPlugin implements PluginMessageListener {
     }
 
     private void postLoad() {
+        log.info("Loading event poller...");
         loadEventPoller();
+        log.info("Server startup completed! Players can now join.");
         net.mizukilab.pit.listener.SafetyJoinListener.setServerStarted(true);
     }
 
     private void preLoad(boolean whiteList) throws Exception {
+        log.info("Starting pre-load phase...");
         if (!this.loadConfig()) {
             throw new IllegalStateException("Failed to load config");
         }
+        log.info("Loading map selector...");
         this.loadMapSelector();
 
         this.loadDatabase();
 
+        log.info("Loading listeners...");
         this.loadListener();
+        log.info("Loading item factor...");
         this.loadItemFactor();
+        log.info("Loading menu...");
         this.loadMenu();
         this.loadNpc();
+        log.info("Loading game...");
         this.loadGame();
+        log.info("Loading medals...");
         this.loadMedals();
+        log.info("Loading buffs...");
         this.loadBuffs();
+        log.info("Loading hologram...");
         this.loadHologram();
+        log.info("Loading sound...");
         this.loadSound();
+        log.info("Loading perks...");
         this.loadPerks();
+        log.info("Loading enchantment...");
         this.loadEnchantment();
+        log.info("Loading quest...");
         this.loadQuest();
+        log.info("Loading events...");
         this.loadEvents();
+        log.info("Loading move handler...");
         this.loadMoveHandler();
 
         this.loadQuest();
+        log.info("Initializing boss bar...");
         this.initBossBar();
 
+        log.info("Initializing pet...");
         this.initPet();
         Bukkit.getPluginManager().registerEvents(new PlayerMoveHandler(), this);
+        log.info("Loading sign GUI...");
         this.signGui = new SignGui(this);
 
+        log.info("Starting reboot runnable...");
         this.rebootRunnable = new RebootRunnable();
         this.rebootRunnable.runTaskTimerAsynchronously(this, 20, 20);
 
+        log.info("Starting mini game controller...");
         this.miniGameController = new MiniGameController();
         this.miniGameController.runTaskTimerAsynchronously(this, 1, 1);
+        log.info("Starting day night cycle runnable...");
         new DayNightCycleRunnable().runTaskTimer(this, 20, 20);
 
 
-        //TODO 待修复
+        log.info("Bootstrapping world...");
         bootstrapWorld();
 
+        log.info("Registering plugin channels...");
         Messenger messenger = this.getServer().getMessenger();
         messenger.registerOutgoingPluginChannel(this, "BungeeCord");
         messenger.registerIncomingPluginChannel(this, "BungeeCord", this);
+        log.info("Refreshing fixed reward data...");
         FixedRewardData.Companion.refreshAll();
         Bukkit.getServer().setWhitelist(whiteList);
+        log.info("Starting profile load runnable...");
         new ProfileLoadRunnable(this);
+        log.info("Pre-load phase completed!");
     }
 
     private void loadMapSelector() {
