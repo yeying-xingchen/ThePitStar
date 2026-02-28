@@ -8,9 +8,15 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 public class SafetyJoinListener implements Listener {
 
+    private static boolean serverStarted = false;
+
+    public static void setServerStarted(boolean started) {
+        serverStarted = started;
+    }
+
     @EventHandler
     public void onLogin(AsyncPlayerPreLoginEvent event) {
-        if (ThePit.getApi() == null || !ThePit.getApi().isLoaded()) {
+        if (!serverStarted) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, CC.translate("&c天坑仍然在启动中...请耐心等待"));
         }
     }

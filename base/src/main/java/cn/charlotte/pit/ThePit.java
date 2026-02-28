@@ -231,6 +231,7 @@ public class ThePit extends JavaPlugin implements PluginMessageListener {
 
     private void postLoad() {
         loadEventPoller();
+        net.mizukilab.pit.listener.SafetyJoinListener.setServerStarted(true);
     }
 
     private void preLoad(boolean whiteList) throws Exception {
